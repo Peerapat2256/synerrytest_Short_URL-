@@ -2,7 +2,7 @@
 
 > **ข้อสอบสำหรับทดสอบ Developer: ออกแบบและพัฒนาระบบ Short URL**  
 > พัฒนาโดย: **Peerapat**  
-> Live Production URL: *(กำลัง Deploy บน Vercel)*  
+> Live Production URL: [https://synerrytest-short-url.vercel.app](https://synerrytest-short-url.vercel.app)  
 > Repository: [https://github.com/Peerapat2256/synerrytest_Short_URL-](https://github.com/Peerapat2256/synerrytest_Short_URL-)
 
 ---
