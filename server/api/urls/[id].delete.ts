@@ -1,5 +1,5 @@
 import { defineEventHandler, getRouterParam, createError, type H3Event } from 'h3'
-import { useUrlService } from '../../utils/container'
+import { useShortenerService } from '../../utils/container'
 
 export default defineEventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'id')
@@ -7,8 +7,8 @@ export default defineEventHandler(async (event: H3Event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
   }
 
-  const urlService = await useUrlService()
-  await urlService.deleteUrl(Number(id))
+  const shortenerService = await useShortenerService()
+  await shortenerService.deleteUrl(Number(id))
 
   return {
     success: true

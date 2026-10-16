@@ -1,5 +1,5 @@
 import { defineEventHandler, getRequestIP, getRequestHeader, sendRedirect, type H3Event } from 'h3'
-import { useUrlService } from '../utils/container'
+import { useRedirectService, useAnalyticsService } from '../utils/container'
 
 export default defineEventHandler(async (event: H3Event) => {
   const reqPath = event.path || ''
@@ -20,16 +20,19 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   try {
-    const ip = getRequestIP(event, { xForwardedFor: true }) || '127.0.0.1'
-    const userAgent = getRequestHeader(event, 'user-agent') || 'Unknown'
-    const referer = getRequestHeader(event, 'referer') || 'Direct'
-
-    const urlService = await useUrlService()
-    const urlRecord = await urlService.resolveShortCodeAndTrack(cleanPath, ip, userAgent, referer)
+    const redirectService = await useRedirectService()
+    const urlRecord = await redirectService.resolveShortCode(cleanPath)
 
     if (!urlRecord) {
       return
     }
+
+    const ip = getRequestIP(event, { xForwardedFor: true }) || '127.0.0.1'
+    const userAgent = getRequestHeader(event, 'user-agent') || 'Unknown'
+    const referer = getRequestHeader(event, 'referer') || 'Direct'
+
+    const analyticsService = await useAnalyticsService()
+    await analyticsService.trackClick(urlRecord.id, ip, userAgent, referer)
 
     return sendRedirect(event, urlRecord.original_url, 302)
   } catch (err: any) {

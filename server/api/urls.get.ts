@@ -1,13 +1,13 @@
 import { defineEventHandler, getRequestHeader, type H3Event } from 'h3'
-import { useUrlService } from '../utils/container'
+import { useShortenerService } from '../utils/container'
 
 export default defineEventHandler(async (event: H3Event) => {
   const reqHost = getRequestHeader(event, 'host') || 'localhost:3000'
   const protocol = getRequestHeader(event, 'x-forwarded-proto') || 'http'
   const baseUrl = `${protocol}://${reqHost}`
 
-  const urlService = await useUrlService()
-  const data = await urlService.getAllUrls(baseUrl)
+  const shortenerService = await useShortenerService()
+  const data = await shortenerService.getAllUrls(baseUrl)
 
   return {
     success: true,

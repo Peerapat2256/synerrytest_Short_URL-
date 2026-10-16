@@ -1,0 +1,104 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0">
+  <diagram id="Microservice_Architecture" name="Microservice Architecture Diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="arch_title" value="Microservice &amp; Layered Architecture Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
+          <mxGeometry x="250" y="30" width="670" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Client Layer -->
+        <mxCell id="client_box" value="&lt;b&gt;Client Layer (Frontend)&lt;/b&gt;&lt;br&gt;Web Browser / Mobile&lt;br&gt;(Vue 3 / Nuxt App)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway -->
+        <mxCell id="gateway_box" value="&lt;b&gt;API Gateway &amp;amp; Router&lt;/b&gt;&lt;br&gt;(Controller Layer)&lt;br&gt;&lt;br&gt;• POST /api/shorten&lt;br&gt;• GET /api/urls&lt;br&gt;• DELETE /api/urls/:id&lt;br&gt;• GET /api/urls/:id/logs&lt;br&gt;• GET /:code (302 Redirect)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=12;align=left;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="300" y="205" width="190" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Microservices Container -->
+        <mxCell id="ms_group" value="Microservices Layer (Domain Services)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;swimlaneFillColor=#fafafa;strokeColor=#000000;strokeWidth=1.5;startSize=30;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="560" y="100" width="240" height="390" as="geometry" />
+        </mxCell>
+
+        <!-- Shortener Service -->
+        <mxCell id="svc_shortener" value="&lt;b&gt;1. Shortener Service&lt;/b&gt;&lt;br&gt;(shortener.service.ts)&lt;br&gt;สร้างลิงก์สั้น / QR Code / จัดการลิงก์" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;fontSize=11;" vertex="1" parent="ms_group">
+          <mxGeometry x="20" y="50" width="200" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Redirect Service -->
+        <mxCell id="svc_redirect" value="&lt;b&gt;2. Redirect Service&lt;/b&gt;&lt;br&gt;(redirect.service.ts)&lt;br&gt;ค้นหารหัสย่อ / เช็ควันหมดอายุ / 302" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;fontSize=11;" vertex="1" parent="ms_group">
+          <mxGeometry x="20" y="165" width="200" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Analytics Service -->
+        <mxCell id="svc_analytics" value="&lt;b&gt;3. Analytics Service&lt;/b&gt;&lt;br&gt;(analytics.service.ts)&lt;br&gt;นับจำนวนคลิก / บันทึก Click Logs" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;fontSize=11;" vertex="1" parent="ms_group">
+          <mxGeometry x="20" y="280" width="200" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- Repository Layer -->
+        <mxCell id="repo_url" value="&lt;b&gt;URL Repository&lt;/b&gt;&lt;br&gt;(url.repository.ts)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="180" width="150" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="repo_analytics" value="&lt;b&gt;Analytics Repository&lt;/b&gt;&lt;br&gt;(analytics.repository.ts)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="860" y="390" width="150" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Database Layer (MySQL TiDB Cloud) -->
+        <mxCell id="db_urls" value="&lt;b&gt;MySQL: urls&lt;/b&gt;&lt;br&gt;(TiDB Cloud)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="172.5" width="110" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="db_logs" value="&lt;b&gt;MySQL: click_logs&lt;/b&gt;&lt;br&gt;(TiDB Cloud)" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="382.5" width="110" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e_client_gw" value="HTTP / REST" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeWidth=1.2;strokeColor=#000000;fontSize=11;" edge="1" parent="1" source="client_box" target="gateway_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_gw_s1" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="gateway_box" target="svc_shortener">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_gw_s2" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="gateway_box" target="svc_redirect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_gw_s3" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="gateway_box" target="svc_analytics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_s2_s3" value="Async Event" style="endArrow=classic;html=1;rounded=0;dashed=1;strokeWidth=1.2;strokeColor=#000000;fontSize=10;" edge="1" parent="ms_group" source="svc_redirect" target="svc_analytics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_s1_r1" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="svc_shortener" target="repo_url">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_s2_r1" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="svc_redirect" target="repo_url">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_s3_r2" style="endArrow=classic;html=1;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="svc_analytics" target="repo_analytics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_r1_db1" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="repo_url" target="db_urls">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_r2_db2" style="endArrow=classic;startArrow=classic;html=1;rounded=0;strokeWidth=1.2;strokeColor=#000000;" edge="1" parent="1" source="repo_analytics" target="db_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

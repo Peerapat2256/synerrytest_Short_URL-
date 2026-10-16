@@ -1,5 +1,5 @@
 import { defineEventHandler, getRouterParam, createError, type H3Event } from 'h3'
-import { useUrlService } from '../../../utils/container'
+import { useAnalyticsService } from '../../../utils/container'
 
 export default defineEventHandler(async (event: H3Event) => {
   const id = getRouterParam(event, 'id')
@@ -7,8 +7,8 @@ export default defineEventHandler(async (event: H3Event) => {
     throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
   }
 
-  const urlService = await useUrlService()
-  const data = await urlService.getClickLogs(Number(id))
+  const analyticsService = await useAnalyticsService()
+  const data = await analyticsService.getClickLogs(Number(id))
 
   return {
     success: true,

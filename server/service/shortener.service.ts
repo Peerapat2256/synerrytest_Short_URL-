@@ -2,19 +2,15 @@ import { createError } from 'h3'
 import QRCode from 'qrcode'
 import type { UrlRepository } from '../repository/url.repository'
 import type { CreateShortUrlRequestDto, ShortUrlResponseDto } from '../controller/dto/url.dto'
-import type { ClickLogModel } from '../model/clickLog.model'
-import type { UrlModel } from '../model/url.model'
 import { generateShortCode, isValidUrl } from '../utils/urlHelper'
 
-export interface UrlService {
+export interface ShortenerService {
   createShortUrl(dto: CreateShortUrlRequestDto, baseUrl: string): Promise<ShortUrlResponseDto>
   getAllUrls(baseUrl: string): Promise<ShortUrlResponseDto[]>
-  resolveShortCodeAndTrack(shortCode: string, ip: string, userAgent: string, referer: string): Promise<UrlModel | null>
   deleteUrl(id: number): Promise<void>
-  getClickLogs(urlId: number): Promise<ClickLogModel[]>
 }
 
-class UrlServiceImpl implements UrlService {
+class ShortenerServiceImpl implements ShortenerService {
   private urlRepository: UrlRepository
 
   constructor(urlRepository: UrlRepository) {
@@ -123,45 +119,14 @@ class UrlServiceImpl implements UrlService {
     )
   }
 
-  async resolveShortCodeAndTrack(
-    shortCode: string,
-    ip: string,
-    userAgent: string,
-    referer: string
-  ): Promise<UrlModel | null> {
-    const urlRecord = await this.urlRepository.getUrlByShortCode(shortCode)
-    if (!urlRecord) {
-      return null
-    }
-
-    if (urlRecord.expires_at && new Date(urlRecord.expires_at) < new Date()) {
-      throw createError({
-        statusCode: 410,
-        statusMessage: 'Link Expired'
-      })
-    }
-
-    await this.urlRepository.incrementClickCount(urlRecord.id)
-
-    this.urlRepository
-      .createClickLog(urlRecord.id, ip, userAgent, referer)
-      .catch((err) => console.error('Click log error:', err))
-
-    return urlRecord
-  }
-
   async deleteUrl(id: number): Promise<void> {
     const deleted = await this.urlRepository.deleteUrlById(id)
     if (!deleted) {
       throw createError({ statusCode: 404, statusMessage: 'URL not found' })
     }
   }
-
-  async getClickLogs(urlId: number): Promise<ClickLogModel[]> {
-    return this.urlRepository.getClickLogsByUrlId(urlId)
-  }
 }
 
-export function NewUrlService(urlRepository: UrlRepository): UrlService {
-  return new UrlServiceImpl(urlRepository)
+export function NewShortenerService(urlRepository: UrlRepository): ShortenerService {
+  return new ShortenerServiceImpl(urlRepository)
 }

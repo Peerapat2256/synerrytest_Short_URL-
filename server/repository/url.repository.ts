@@ -1,15 +1,11 @@
 import type { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise'
 import type { UrlModel } from '../model/url.model'
-import type { ClickLogModel } from '../model/clickLog.model'
 
 export interface UrlRepository {
   getAllUrls(): Promise<UrlModel[]>
   getUrlByShortCode(shortCode: string): Promise<UrlModel | null>
   createUrl(originalUrl: string, shortCode: string, expiresAt: string | null): Promise<number>
-  incrementClickCount(id: number): Promise<void>
   deleteUrlById(id: number): Promise<boolean>
-  createClickLog(urlId: number, ipAddress: string, userAgent: string, referer: string): Promise<void>
-  getClickLogsByUrlId(urlId: number): Promise<ClickLogModel[]>
 }
 
 class UrlRepositoryImpl implements UrlRepository {
@@ -45,32 +41,9 @@ class UrlRepositoryImpl implements UrlRepository {
     return result.insertId
   }
 
-  async incrementClickCount(id: number): Promise<void> {
-    await this.db.query('UPDATE urls SET click_count = click_count + 1 WHERE id = ?', [id])
-  }
-
   async deleteUrlById(id: number): Promise<boolean> {
     const [result] = await this.db.query<ResultSetHeader>('DELETE FROM urls WHERE id = ?', [id])
     return result.affectedRows > 0
-  }
-
-  async createClickLog(urlId: number, ipAddress: string, userAgent: string, referer: string): Promise<void> {
-    await this.db.query(
-      'INSERT INTO click_logs (url_id, ip_address, user_agent, referer) VALUES (?, ?, ?, ?)',
-      [urlId, ipAddress, userAgent, referer]
-    )
-  }
-
-  async getClickLogsByUrlId(urlId: number): Promise<ClickLogModel[]> {
-    const [rows] = await this.db.query<RowDataPacket[]>(
-      `SELECT id, url_id, ip_address, user_agent, referer, clicked_at
-       FROM click_logs
-       WHERE url_id = ?
-       ORDER BY clicked_at DESC
-       LIMIT 50`,
-      [urlId]
-    )
-    return rows as unknown as ClickLogModel[]
   }
 }
 

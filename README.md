@@ -37,24 +37,21 @@
 
 ---
 
-## 3. Architecture Diagram
+## 3. Architecture Diagram (Microservice & Layered Architecture)
 
-```mermaid
-flowchart LR
-    Client([Web Browser / Mobile]) --> Gateway[API / Redirect Router]
+ระบบแบ่งการทำงานฝั่ง Backend ออกเป็น **3 Domain Microservices** ทำงานร่วมกับ **API Gateway** และ **Repository Layer**:
 
-    subgraph Application_Layers ["Layered Architecture (Nuxt Nitro)"]
-        Gateway --> Controller["Controller Layer\n(server/api & middleware)"]
-        Controller --> Service["Service Layer\n(server/service)"]
-        Service --> Repository["Repository Layer\n(server/repository)"]
-    end
+1. **Shortener Service (`shortener.service.ts`):** จัดการการสร้าง Short URL, ตรวจสอบ Custom Alias, สร้าง QR Code และจัดการรายการลิงก์
+2. **Redirect Service (`redirect.service.ts`):** ค้นหารหัสย่อ (`short_code`), ตรวจสอบวันหมดอายุ และทำ HTTP 302 Redirect
+3. **Analytics Service (`analytics.service.ts`):** นับสถิติการคลิก (`click_count`) และบันทึกข้อมูลการเข้าชม (`click_logs`) แบบ Asynchronous
 
-    Repository --> DB[(MySQL Database - TiDB Cloud)]
-```
+![Microservice & Layered Architecture Diagram](./docs/architecture_diagram.svg)
+
+*(ไฟล์ต้นฉบับ draw.io: [`architecture_diagram.drawio`](./architecture_diagram.drawio))*
 
 ---
 
-## 4. โครงสร้างโปรเจกต์ (Layered Architecture)
+## 4. โครงสร้างโปรเจกต์ (Microservices & Layered Architecture)
 
 ```text
 synerry-shorturl/
@@ -66,26 +63,29 @@ synerry-shorturl/
 │   └── app.vue                       # Root Component
 │
 ├── server/                           # Backend (Node.js / Nitro)
-│   ├── api/                          # Controller Layer (REST API)
-│   │   ├── shorten.post.ts           # POST /api/shorten
-│   │   ├── urls.get.ts               # GET /api/urls
+│   ├── api/                          # API Gateway / Controller Layer (REST API)
+│   │   ├── shorten.post.ts           # POST /api/shorten -> Shortener Service
+│   │   ├── urls.get.ts               # GET /api/urls -> Shortener Service
 │   │   └── urls/
-│   │       ├── [id].delete.ts        # DELETE /api/urls/:id
-│   │       └── [id]/logs.get.ts      # GET /api/urls/:id/logs
+│   │       ├── [id].delete.ts        # DELETE /api/urls/:id -> Shortener Service
+│   │       └── [id]/logs.get.ts      # GET /api/urls/:id/logs -> Analytics Service
 │   ├── middleware/
-│   │   └── redirect.ts               # Redirect Handler (GET /:code)
+│   │   └── redirect.ts               # GET /:code -> Redirect & Analytics Service
 │   ├── controller/dto/
 │   │   └── url.dto.ts                # Data Transfer Objects
-│   ├── service/
-│   │   └── url.service.ts            # Business Logic Layer
-│   ├── repository/
-│   │   ├── dbconnect.ts              # Database Connection
-│   │   └── url.repository.ts         # Data Access Layer (SQL Queries)
+│   ├── service/                      # Microservices Layer (Domain Services)
+│   │   ├── shortener.service.ts      # 1. Shortener & QR Code Service
+│   │   ├── redirect.service.ts       # 2. Redirect Resolution Service
+│   │   └── analytics.service.ts      # 3. Click Tracking & Analytics Service
+│   ├── repository/                   # Data Access Layer (SQL Queries)
+│   │   ├── dbconnect.ts              # Database Connection Pool
+│   │   ├── url.repository.ts         # Repository ตาราง urls
+│   │   └── analytics.repository.ts   # Repository ตาราง click_logs
 │   ├── model/
 │   │   ├── url.model.ts              # Entity Model ตาราง urls
 │   │   └── clickLog.model.ts         # Entity Model ตาราง click_logs
 │   └── utils/
-│       ├── container.ts              # Dependency Injection
+│       ├── container.ts              # Service Container & Dependency Injection
 │       └── urlHelper.ts              # URL Validation & Code Generator
 ```
 
