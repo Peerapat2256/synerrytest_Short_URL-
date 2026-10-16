@@ -116,6 +116,45 @@ flowchart LR
 
 ---
 
+## 📂 4. โครงสร้างโปรเจกต์ (Layered Architecture)
+
+จัดระเบียบโค้ดตามหลัก **Layered Architecture (Separation of Concerns)** แยกส่วน Frontend และ Backend (Controller, Service, Repository, Model) ออกจากกันอย่างชัดเจน:
+
+```text
+synerry-shorturl/
+├── app/                              # [Frontend Layer - Nuxt / Vue 3]
+│   ├── assets/css/main.css           # Tailwind CSS
+│   ├── layouts/default.vue           # โครงสร้าง Navbar & Layout หลัก (<slot />)
+│   ├── model/url.model.ts            # โครงสร้างข้อมูล Model ฝั่งหน้าบ้าน
+│   ├── pages/index.vue               # หน้าเพจหลัก (สร้างลิงก์, QR Code, ตารางสถิติ)
+│   └── app.vue                       # Root Component (<NuxtLayout><NuxtPage /></NuxtLayout>)
+│
+├── server/                           # [Backend Layer - Nuxt Nitro Layered Architecture]
+│   ├── api/                          # 1. Presentation / Controller Layer (รับ-ส่ง HTTP JSON)
+│   │   ├── shorten.post.ts           # POST /api/shorten
+│   │   ├── urls.get.ts               # GET /api/urls
+│   │   └── urls/
+│   │       ├── [id].delete.ts        # DELETE /api/urls/:id
+│   │       └── [id]/logs.get.ts      # GET /api/urls/:id/logs
+│   ├── middleware/
+│   │   └── redirect.ts               # Redirect Controller (GET /:code -> HTTP 302)
+│   ├── controller/dto/               # Data Transfer Objects (Request/Response DTO)
+│   │   └── url.dto.ts
+│   ├── service/                      # 2. Service Layer (Business Logic & QR Generation)
+│   │   └── url.service.ts
+│   ├── repository/                   # 3. Repository Layer (Database Access & SQL Queries)
+│   │   ├── dbconnect.ts              # การเชื่อมต่อฐานข้อมูล TiDB MySQL
+│   │   └── url.repository.ts         # คำสั่ง SQL ติดต่อตาราง urls และ click_logs
+│   ├── model/                        # 4. Model Layer (Database Schema Entities)
+│   │   ├── url.model.ts
+│   │   └── clickLog.model.ts
+│   └── utils/                        # Dependency Injection Container & Helpers
+│       ├── container.ts
+│       └── urlHelper.ts
+```
+
+---
+
 ## 🛠️ Tech Stack ที่เลือกใช้
 
 - **Frontend**: Vue 3 (Composition API), Nuxt 3, Tailwind CSS, Lucide Icons

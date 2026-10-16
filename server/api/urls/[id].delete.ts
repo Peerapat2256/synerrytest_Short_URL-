@@ -1,18 +1,17 @@
-import { getDb } from '../../utils/db'
-import type { ResultSetHeader } from 'mysql2/promise'
+import { useUrlService } from '../../utils/container'
 
+// Presentation Layer (Controller): ลบรายการ Short URL ตาม ID ผ่าน UrlService
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) {
     throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
   }
 
-  const pool = await getDb()
-  const [result] = await pool.query<ResultSetHeader>('DELETE FROM urls WHERE id = ?', [id])
+  const urlService = await useUrlService()
+  await urlService.deleteUrl(Number(id))
 
-  if (result.affectedRows === 0) {
-    throw createError({ statusCode: 404, statusMessage: 'URL not found' })
+  return {
+    success: true,
+    message: 'Deleted successfully'
   }
-
-  return { success: true, message: 'Deleted successfully' }
 })

@@ -15,10 +15,10 @@ const pool = mysql.createPool({
   queueLimit: 0
 })
 
-// Initialize Tables
 let initialized = false
 
-export async function getDb() {
+// ฟังก์ชันสร้างและตรวจสอบการเชื่อมต่อฐานข้อมูลกลาง (ตามแนวทาง repository/dbconnect)
+export async function NewDbConnection(): Promise<mysql.Pool> {
   if (!initialized) {
     try {
       await pool.query(`
@@ -48,12 +48,10 @@ export async function getDb() {
       `)
 
       initialized = true
-      console.log('✅ TiDB MySQL Tables checked & ready!')
+      console.log('Database connected & tables initialized successfully')
     } catch (err) {
-      console.error('❌ Failed to initialize TiDB Tables:', err)
+      console.error('Error connecting to database:', err)
     }
   }
   return pool
 }
-
-export default pool
