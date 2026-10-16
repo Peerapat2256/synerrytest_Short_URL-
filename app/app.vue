@@ -13,6 +13,15 @@ interface ShortUrlItem {
   is_expired: boolean
 }
 
+interface ClickLogItem {
+  id: number
+  url_id: number
+  ip_address: string
+  user_agent: string
+  referer: string
+  clicked_at: string
+}
+
 const originalUrl = ref('')
 const customAlias = ref('')
 const expiresInDays = ref<number | ''>('')
@@ -24,6 +33,11 @@ const historyList = ref<ShortUrlItem[]>([])
 const isFetchingHistory = ref(false)
 const copiedId = ref<number | null>(null)
 const selectedQrItem = ref<ShortUrlItem | null>(null)
+
+// สำหรับดูรายละเอียด Click Logs (D2: click_logs)
+const selectedLogUrlItem = ref<ShortUrlItem | null>(null)
+const clickLogs = ref<ClickLogItem[]>([])
+const isFetchingLogs = ref(false)
 
 // ฟังก์ชันดึงประวัติ URL ทั้งหมด
 const fetchHistory = async () => {
@@ -37,6 +51,23 @@ const fetchHistory = async () => {
     console.error('Fetch history error:', err)
   } finally {
     isFetchingHistory.value = false
+  }
+}
+
+// ฟังก์ชันดึงข้อมูลสถิติการคลิกเชิงลึกจากตาราง click_logs
+const openClickLogs = async (item: ShortUrlItem) => {
+  selectedLogUrlItem.value = item
+  clickLogs.value = []
+  try {
+    isFetchingLogs.value = true
+    const res = await $fetch<{ success: boolean; data: ClickLogItem[] }>(`/api/urls/${item.id}/logs`)
+    if (res.success) {
+      clickLogs.value = res.data
+    }
+  } catch (err) {
+    console.error('Fetch click logs error:', err)
+  } finally {
+    isFetchingLogs.value = false
   }
 }
 
@@ -312,7 +343,7 @@ onMounted(() => {
                 {{ historyList.length }} ลิงก์
               </span>
             </h2>
-            <p class="text-xs sm:text-sm text-slate-400">รายการ URL ที่สร้างทั้งหมด และจำนวนครั้งที่มีผู้คลิกเปิดลิงก์</p>
+            <p class="text-xs sm:text-sm text-slate-400">รายการ URL ที่สร้างทั้งหมด (คลิกที่จำนวนครั้งเพื่อดูประวัติ IP & อุปกรณ์จากตาราง click_logs)</p>
           </div>
 
           <button
@@ -332,7 +363,7 @@ onMounted(() => {
                 <tr>
                   <th class="py-3.5 px-4">Short URL</th>
                   <th class="py-3.5 px-4">Full URL ปลายทาง</th>
-                  <th class="py-3.5 px-4 text-center">สถิติคลิก</th>
+                  <th class="py-3.5 px-4 text-center">สถิติคลิก (ดู Log)</th>
                   <th class="py-3.5 px-4 text-center">QR Code</th>
                   <th class="py-3.5 px-4">วันที่สร้าง</th>
                   <th class="py-3.5 px-4 text-center">สถานะ</th>
@@ -374,11 +405,16 @@ onMounted(() => {
                     </a>
                   </td>
 
-                  <!-- Clicks Count -->
+                  <!-- Clicks Count (Clickable to view click_logs) -->
                   <td class="py-3.5 px-4 text-center">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                      {{ item.click_count }} ครั้ง
-                    </span>
+                    <button
+                      @click="openClickLogs(item)"
+                      class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 transition cursor-pointer"
+                      title="คลิกเพื่อดูประวัติการคลิกเชิงลึก (IP / อุปกรณ์)"
+                    >
+                      <span>{{ item.click_count }} ครั้ง</span>
+                      <span class="text-[10px] opacity-75">🔍</span>
+                    </button>
                   </td>
 
                   <!-- QR Code Preview Button -->
@@ -459,6 +495,59 @@ onMounted(() => {
           >
             ปิด
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal ดูประวัติการคลิกเชิงลึก (Click Logs Modal) -->
+    <div
+      v-if="selectedLogUrlItem"
+      class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      @click.self="selectedLogUrlItem = null"
+    >
+      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+          <div>
+            <h3 class="font-bold text-lg text-white">
+              ประวัติการคลิกเชิงลึก (ตาราง click_logs)
+            </h3>
+            <p class="text-xs text-indigo-400 font-mono">
+              /{{ selectedLogUrlItem.short_code }} ({{ selectedLogUrlItem.click_count }} คลิก)
+            </p>
+          </div>
+          <button
+            @click="selectedLogUrlItem = null"
+            class="px-3 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs"
+          >
+            ปิด
+          </button>
+        </div>
+
+        <div v-if="isFetchingLogs" class="py-8 text-center text-slate-400 text-sm">
+          กำลังดึงข้อมูลจากตาราง click_logs...
+        </div>
+
+        <div v-else-if="clickLogs.length === 0" class="py-8 text-center text-slate-500 text-sm">
+          ยังไม่มีประวัติการคลิกสำหรับลิงก์นี้
+        </div>
+
+        <div v-else class="max-h-80 overflow-y-auto divide-y divide-slate-700/60">
+          <div
+            v-for="log in clickLogs"
+            :key="log.id"
+            class="py-3 px-2 text-xs space-y-1 hover:bg-slate-700/20 rounded"
+          >
+            <div class="flex items-center justify-between text-slate-300 font-medium">
+              <span>🌐 IP: <span class="font-mono text-emerald-400">{{ log.ip_address }}</span></span>
+              <span class="text-slate-400">{{ formatDate(log.clicked_at) }}</span>
+            </div>
+            <div class="text-slate-400 truncate" :title="log.user_agent">
+              💻 อุปกรณ์/Browser: {{ log.user_agent }}
+            </div>
+            <div class="text-slate-500">
+              🔗 แหล่งที่มา (Referer): {{ log.referer }}
+            </div>
+          </div>
         </div>
       </div>
     </div>

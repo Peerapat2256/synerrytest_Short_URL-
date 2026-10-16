@@ -1,120 +1,157 @@
-<mxfile host="app.diagrams.net" modified="2026-10-16T09:34:00.000Z" agent="Mozilla/5.0" version="21.0.0" type="device">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0">
   <diagram id="ER_Diagram" name="ER Diagram (Chen Notation)">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="4819" dy="2841" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-
-        <!-- Title -->
-        <mxCell id="er_title" value="Entity Relationship Diagram (ER Diagram) - Chen Notation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1E293B;" vertex="1" parent="1">
-          <mxGeometry x="250" y="40" width="670" height="40" as="geometry" />
+        <mxCell id="er_title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1E293B;" value="Entity Relationship Diagram (ER Diagram)&amp;nbsp;" vertex="1">
+          <mxGeometry height="40" width="670" x="-900" y="-700" as="geometry" />
         </mxCell>
-
-        <!-- Entity 1: urls -->
-        <mxCell id="ent_urls" value="urls&#xa;(ตารางลิงก์)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=2.5;fontColor=#1E3A8A;" vertex="1" parent="1">
-          <mxGeometry x="250" y="320" width="160" height="80" as="geometry" />
+        <mxCell id="ent_urls" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;strokeWidth=1;" value="urls" vertex="1">
+          <mxGeometry height="80" width="160" x="-930" y="-450" as="geometry" />
         </mxCell>
-
-        <!-- Relationship: has_logs -->
-        <mxCell id="rel_has" value="has_logs&#xa;(1 : N)" style="rhombus;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;fillColor=#FEF3C7;strokeColor=#F59E0B;strokeWidth=2;fontColor=#92400E;" vertex="1" parent="1">
-          <mxGeometry x="510" y="315" width="140" height="90" as="geometry" />
+        <mxCell id="rel_has" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontStyle=1;fontSize=14;strokeWidth=1;" value="has" vertex="1">
+          <mxGeometry height="90" width="140" x="-670" y="-455" as="geometry" />
         </mxCell>
-
-        <!-- Entity 2: click_logs -->
-        <mxCell id="ent_logs" value="click_logs&#xa;(ตารางประวัติการคลิก)" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;fillColor=#ECFDF5;strokeColor=#10B981;strokeWidth=2.5;fontColor=#064E3B;" vertex="1" parent="1">
-          <mxGeometry x="750" y="320" width="170" height="80" as="geometry" />
+        <mxCell id="ent_logs" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;fontSize=16;strokeWidth=1;" value="click_logs" vertex="1">
+          <mxGeometry height="80" width="170" x="-430" y="-450" as="geometry" />
         </mxCell>
-
-        <!-- Relationship lines -->
-        <mxCell id="line_urls_rel" value="1" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#1E40AF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ent_urls" target="rel_has">
+        <mxCell id="line_urls_rel" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#000000;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;fillColor=#000000;" target="rel_has" value="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <mxCell id="line_rel_logs" value="N" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#065F46;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="rel_has" target="ent_logs">
+        <mxCell id="line_rel_logs" edge="1" parent="1" source="rel_has" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#000000;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;" target="ent_logs" value="N">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
-        <!-- Attributes for urls -->
-        <!-- id (PK) -->
-        <mxCell id="att_u_id" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="190" width="110" height="45" as="geometry" />
+        <mxCell id="att_u_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;" value="&lt;u&gt;id (PK)&lt;/u&gt;" vertex="1">
+          <mxGeometry height="45" width="110" x="-1050" y="-625" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_id" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_id" />
-
-        <!-- original_url -->
-        <mxCell id="att_u_orig" value="original_url" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="60" y="270" width="110" height="45" as="geometry" />
+        <mxCell id="e_u_id" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_id" />
+        <mxCell id="att_u_orig" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="original_url" vertex="1">
+          <mxGeometry height="45" width="110" x="-1150" y="-500" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_orig" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_orig" />
-
-        <!-- short_code (UK) -->
-        <mxCell id="att_u_code" value="short_code (UK)" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="60" y="360" width="120" height="45" as="geometry" />
+        <mxCell id="e_u_orig" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_orig" />
+        <mxCell id="att_u_code" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="short_code (UK)" vertex="1">
+          <mxGeometry height="45" width="120" x="-1160" y="-440" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_code" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_code" />
-
-        <!-- title -->
-        <mxCell id="att_u_title" value="title" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="100" y="440" width="100" height="45" as="geometry" />
+        <mxCell id="e_u_code" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_code" />
+        <mxCell id="att_u_title" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="title" vertex="1">
+          <mxGeometry height="45" width="100" x="-1145" y="-379" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_title" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_title" />
-
-        <!-- click_count -->
-        <mxCell id="att_u_count" value="click_count" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="220" y="490" width="110" height="45" as="geometry" />
+        <mxCell id="e_u_title" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_title" />
+        <mxCell id="att_u_count" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="click_count" vertex="1">
+          <mxGeometry height="45" width="110" x="-1110" y="-318" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_count" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_count" />
-
-        <!-- created_at -->
-        <mxCell id="att_u_create" value="created_at" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="340" y="490" width="110" height="45" as="geometry" />
+        <mxCell id="e_u_count" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_count" />
+        <mxCell id="att_u_create" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="created_at" vertex="1">
+          <mxGeometry height="45" width="110" x="-1030" y="-260" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_create" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_create" />
-
-        <!-- expires_at -->
-        <mxCell id="att_u_exp" value="expires_at" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="260" y="200" width="110" height="45" as="geometry" />
+        <mxCell id="e_u_create" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_create" />
+        <mxCell id="att_u_exp" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="expires_at" vertex="1">
+          <mxGeometry height="45" width="110" x="-1130" y="-570" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_exp" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_urls" target="att_u_exp" />
-
-
-        <!-- Attributes for click_logs -->
-        <!-- id (PK) -->
-        <mxCell id="att_l_id" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="830" y="190" width="100" height="45" as="geometry" />
+        <mxCell id="e_u_exp" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_u_exp" />
+        <mxCell id="att_l_id" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fontStyle=1;" value="&lt;u&gt;id (PK)&lt;/u&gt;" vertex="1">
+          <mxGeometry height="45" width="100" x="-290" y="-630" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_id" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_id" />
-
-        <!-- url_id (FK) -->
-        <mxCell id="att_l_uid" value="url_id (FK)" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="710" y="190" width="100" height="45" as="geometry" />
+        <mxCell id="e_l_id" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_id" />
+        <mxCell id="att_l_uid" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="url_id (FK)" vertex="1">
+          <mxGeometry height="45" width="100" x="-200" y="-580" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_uid" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_uid" />
-
-        <!-- ip_address -->
-        <mxCell id="att_l_ip" value="ip_address" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="970" y="240" width="110" height="45" as="geometry" />
+        <mxCell id="e_l_uid" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_uid" />
+        <mxCell id="att_l_ip" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="ip_address" vertex="1">
+          <mxGeometry height="45" width="110" x="-140" y="-520" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_ip" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_ip" />
-
-        <!-- user_agent -->
-        <mxCell id="att_l_ua" value="user_agent" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="980" y="320" width="110" height="45" as="geometry" />
+        <mxCell id="e_l_ip" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_ip" />
+        <mxCell id="att_l_ua" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="user_agent" vertex="1">
+          <mxGeometry height="45" width="110" x="-140" y="-450" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_ua" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_ua" />
-
-        <!-- referer -->
-        <mxCell id="att_l_ref" value="referer" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="970" y="400" width="100" height="45" as="geometry" />
+        <mxCell id="e_l_ua" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_ua" />
+        <mxCell id="att_l_ref" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="referer" vertex="1">
+          <mxGeometry height="45" width="100" x="-150" y="-379" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_ref" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_ref" />
-
-        <!-- clicked_at -->
-        <mxCell id="att_l_time" value="clicked_at" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="880" y="480" width="110" height="45" as="geometry" />
+        <mxCell id="e_l_ref" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_ref" />
+        <mxCell id="att_l_time" parent="1" style="ellipse;whiteSpace=wrap;html=1;fontSize=13;" value="clicked_at" vertex="1">
+          <mxGeometry height="45" width="110" x="-250" y="-320" as="geometry" />
         </mxCell>
-        <mxCell id="e_l_time" style="endArrow=none;html=1;strokeWidth=1.5;" edge="1" parent="1" source="ent_logs" target="att_l_time" />
-
+        <mxCell id="e_l_time" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;strokeWidth=1.5;" target="att_l_time" />
+        <mxCell id="r0OQteCVdiuse9pbSDt9-1" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="att_u_id" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-910" y="-475" as="sourcePoint" />
+            <mxPoint x="-860" y="-525" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-2" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" target="att_u_exp" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-925" y="-370" as="sourcePoint" />
+            <mxPoint x="-990" y="-540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-3" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="att_u_orig" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-945" y="-300" as="sourcePoint" />
+            <mxPoint x="-1010" y="-470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-4" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="att_u_code" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-915" y="-220" as="sourcePoint" />
+            <mxPoint x="-980" y="-390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-5" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="att_u_title" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-945" y="-200" as="sourcePoint" />
+            <mxPoint x="-1010" y="-370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-6" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" target="att_u_count" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-895" y="-170" as="sourcePoint" />
+            <mxPoint x="-960" y="-340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-7" edge="1" parent="1" source="ent_urls" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="att_u_create" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-825" y="-150" as="sourcePoint" />
+            <mxPoint x="-890" y="-320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-8" edge="1" parent="1" source="ent_logs" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.414;entryY=0.991;entryDx=0;entryDy=0;entryPerimeter=0;" target="att_l_id" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-215" y="-390" as="sourcePoint" />
+            <mxPoint x="-280" y="-560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-9" edge="1" parent="1" source="att_l_uid" style="endArrow=none;html=1;rounded=0;exitX=0.306;exitY=0.911;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" target="ent_logs" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-155" y="-280" as="sourcePoint" />
+            <mxPoint x="-220" y="-450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-10" edge="1" parent="1" source="att_l_ip" style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ent_logs" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-115" y="-320" as="sourcePoint" />
+            <mxPoint x="-180" y="-490" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-11" edge="1" parent="1" source="att_l_ua" style="endArrow=none;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ent_logs" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-115" y="-260" as="sourcePoint" />
+            <mxPoint x="-180" y="-430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-12" edge="1" parent="1" source="att_l_ref" style="endArrow=none;html=1;rounded=0;exitX=-0.01;exitY=0.356;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitPerimeter=0;" target="ent_logs" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-105" y="-270" as="sourcePoint" />
+            <mxPoint x="-170" y="-440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r0OQteCVdiuse9pbSDt9-13" edge="1" parent="1" source="att_l_time" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="ent_logs" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-145" y="-200" as="sourcePoint" />
+            <mxPoint x="-210" y="-370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
