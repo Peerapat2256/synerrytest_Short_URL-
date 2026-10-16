@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1190 -730 1190 540" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Noto Sans Thai', 'Sarabun', 'Segoe UI', Tahoma, sans-serif;">
+  <!-- Background -->
+  <rect x="-1190" y="-730" width="1190" height="540" fill="#ffffff" />
+
+  <!-- Title -->
+  <text x="-565" y="-675" text-anchor="middle" font-size="20" font-weight="bold" fill="#1E293B">Entity Relationship Diagram (ER Diagram)</text>
+
+  <!-- Connector Lines: urls attributes (drawn behind shapes) -->
+  <!-- ent_urls left-middle is (-930, -410) -->
+  <line x1="-930" y1="-410" x2="-995" y2="-580" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-1040" y2="-530" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-1045" y2="-477" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-1040" y2="-417" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-1045" y2="-356" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-1015" y2="-312" stroke="#000000" stroke-width="1.2" />
+  <line x1="-930" y1="-410" x2="-975" y2="-260" stroke="#000000" stroke-width="1.2" />
+
+  <!-- Connector Lines: click_logs attributes -->
+  <!-- ent_logs right-middle is (-260, -410) -->
+  <line x1="-260" y1="-410" x2="-248" y2="-585" stroke="#000000" stroke-width="1.2" />
+  <line x1="-260" y1="-410" x2="-169" y2="-539" stroke="#000000" stroke-width="1.2" />
+  <line x1="-260" y1="-410" x2="-140" y2="-497" stroke="#000000" stroke-width="1.2" />
+  <line x1="-260" y1="-410" x2="-140" y2="-427" stroke="#000000" stroke-width="1.2" />
+  <line x1="-260" y1="-410" x2="-150" y2="-363" stroke="#000000" stroke-width="1.2" />
+  <line x1="-260" y1="-410" x2="-195" y2="-320" stroke="#000000" stroke-width="1.2" />
+
+  <!-- Relationship Lines: urls (1) — has — (N) click_logs -->
+  <line x1="-770" y1="-410" x2="-670" y2="-410" stroke="#000000" stroke-width="2" />
+  <rect x="-730" y="-424" width="20" height="24" fill="#ffffff" />
+  <text x="-720" y="-404" text-anchor="middle" font-size="16" font-weight="bold" fill="#000000">1</text>
+
+  <line x1="-530" y1="-410" x2="-430" y2="-410" stroke="#000000" stroke-width="2" />
+  <rect x="-490" y="-424" width="20" height="24" fill="#ffffff" />
+  <text x="-480" y="-404" text-anchor="middle" font-size="16" font-weight="bold" fill="#000000">N</text>
+
+  <!-- Entity: urls -->
+  <rect x="-930" y="-450" width="160" height="80" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-850" y="-404" text-anchor="middle" font-size="16" font-weight="bold" fill="#000000">urls</text>
+
+  <!-- Relationship: has (Diamond) -->
+  <polygon points="-600,-455 -530,-410 -600,-365 -670,-410" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-600" y="-405" text-anchor="middle" font-size="14" font-weight="bold" fill="#000000">has</text>
+
+  <!-- Entity: click_logs -->
+  <rect x="-430" y="-450" width="170" height="80" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-345" y="-404" text-anchor="middle" font-size="16" font-weight="bold" fill="#000000">click_logs</text>
+
+  <!-- Attributes of urls -->
+  <!-- id (PK) -->
+  <ellipse cx="-995" cy="-602.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-995" y="-598" text-anchor="middle" font-size="13" font-weight="bold" text-decoration="underline" fill="#000000">id (PK)</text>
+
+  <!-- expires_at -->
+  <ellipse cx="-1075" cy="-547.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-1075" y="-543" text-anchor="middle" font-size="13" fill="#000000">expires_at</text>
+
+  <!-- original_url -->
+  <ellipse cx="-1095" cy="-477.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-1095" y="-473" text-anchor="middle" font-size="13" fill="#000000">original_url</text>
+
+  <!-- short_code (UK) -->
+  <ellipse cx="-1100" cy="-417.5" rx="60" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-1100" y="-413" text-anchor="middle" font-size="13" fill="#000000">short_code (UK)</text>
+
+  <!-- title -->
+  <ellipse cx="-1095" cy="-356.5" rx="50" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-1095" y="-352" text-anchor="middle" font-size="13" fill="#000000">title</text>
+
+  <!-- click_count -->
+  <ellipse cx="-1055" cy="-295.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-1055" y="-291" text-anchor="middle" font-size="13" fill="#000000">click_count</text>
+
+  <!-- created_at -->
+  <ellipse cx="-975" cy="-237.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-975" y="-233" text-anchor="middle" font-size="13" fill="#000000">created_at</text>
+
+  <!-- Attributes of click_logs -->
+  <!-- id (PK) -->
+  <ellipse cx="-240" cy="-607.5" rx="50" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-240" y="-603" text-anchor="middle" font-size="13" font-weight="bold" text-decoration="underline" fill="#000000">id (PK)</text>
+
+  <!-- url_id (FK) -->
+  <ellipse cx="-150" cy="-557.5" rx="50" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-150" y="-553" text-anchor="middle" font-size="13" fill="#000000">url_id (FK)</text>
+
+  <!-- ip_address -->
+  <ellipse cx="-85" cy="-497.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-85" y="-493" text-anchor="middle" font-size="13" fill="#000000">ip_address</text>
+
+  <!-- user_agent -->
+  <ellipse cx="-85" cy="-427.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-85" y="-423" text-anchor="middle" font-size="13" fill="#000000">user_agent</text>
+
+  <!-- referer -->
+  <ellipse cx="-100" cy="-356.5" rx="50" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-100" y="-352" text-anchor="middle" font-size="13" fill="#000000">referer</text>
+
+  <!-- clicked_at -->
+  <ellipse cx="-195" cy="-297.5" rx="55" ry="22.5" fill="#ffffff" stroke="#000000" stroke-width="1.2" />
+  <text x="-195" y="-293" text-anchor="middle" font-size="13" fill="#000000">clicked_at</text>
+</svg>

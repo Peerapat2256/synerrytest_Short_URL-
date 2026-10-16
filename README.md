@@ -21,35 +21,9 @@
 
 ## 1. Data Flow Diagram (DFD Level 0)
 
-```mermaid
-flowchart TD
-    User([ผู้ใช้งานทั่วไป])
+![Data Flow Diagram Level 0](./docs/dfd_level_0.svg)
 
-    subgraph System ["0.0 ระบบ Short URL และจัดการสถิติ"]
-        P1["สร้าง Short URL และ QR Code"]
-        P2["ตรวจสอบและ Redirect ลิงก์"]
-        P3["จัดการประวัติและสถิติการคลิก"]
-    end
-
-    D1[(D1: urls)]
-    D2[(D2: click_logs)]
-
-    User -->|ข้อมูล Full URL / Custom Alias / วันหมดอายุ| P1
-    P1 -->|บันทึกข้อมูล URL| D1
-    P1 -->|ผลลัพธ์ Short URL และรูปภาพ QR Code| User
-
-    User -->|เปิดลิงก์ Short URL / สแกน QR Code| P2
-    D1 -->|ค้นหา Full URL| P2
-    P2 -->|HTTP 302 Redirect ไปยัง URL ปลายทางจริง| User
-    P2 -->|บันทึกประวัติการคลิก| D2
-
-    User -->|คำขอเรียกดูประวัติและสถิติการใช้งาน| P3
-    D1 -->|รายการ URL ทั้งหมด| P3
-    D2 -->|ข้อมูลสถิติการคลิก| P3
-    P3 -->|รายการประวัติ URL และจำนวนคลิก| User
-```
-
-*(ไฟล์ต้นฉบับ draw.io: `dfd_level_0.drawio`)*
+*(ไฟล์ต้นฉบับ draw.io: [`dfd_level_0.drawio`](./dfd_level_0.drawio))*
 
 ---
 
@@ -57,31 +31,9 @@ flowchart TD
 
 ใช้ฐานข้อมูล **MySQL (TiDB Cloud)** แบ่งออกเป็น 2 ตารางหลัก (`urls` และ `click_logs`) ความสัมพันธ์แบบ One-to-Many (1:N):
 
-```mermaid
-erDiagram
-    URLS ||--o{ CLICK_LOGS : "has (1:N)"
+![Entity Relationship Diagram](./docs/er_diagram.svg)
 
-    URLS {
-        int id PK
-        text original_url
-        varchar short_code UK
-        varchar title
-        int click_count
-        datetime created_at
-        datetime expires_at
-    }
-
-    CLICK_LOGS {
-        int id PK
-        int url_id FK
-        varchar ip_address
-        text user_agent
-        text referer
-        datetime clicked_at
-    }
-```
-
-*(ไฟล์ต้นฉบับ draw.io: `er_diagram.drawio`)*
+*(ไฟล์ต้นฉบับ draw.io: [`er_diagram.drawio`](./er_diagram.drawio))*
 
 ---
 
