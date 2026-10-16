@@ -14,12 +14,10 @@ const isFetchingHistory = ref(false)
 const copiedId = ref<number | null>(null)
 const selectedQrItem = ref<ShortUrlItem | null>(null)
 
-// สำหรับดูรายละเอียด Click Logs (D2: click_logs)
 const selectedLogUrlItem = ref<ShortUrlItem | null>(null)
 const clickLogs = ref<ClickLogItem[]>([])
 const isFetchingLogs = ref(false)
 
-// ฟังก์ชันดึงประวัติ URL ทั้งหมดจาก API
 const fetchHistory = async () => {
   try {
     isFetchingHistory.value = true
@@ -27,14 +25,13 @@ const fetchHistory = async () => {
     if (res.success) {
       historyList.value = res.data
     }
-  } catch (err: any) {
-    console.error('Fetch history error:', err)
+  } catch (err) {
+    console.error(err)
   } finally {
     isFetchingHistory.value = false
   }
 }
 
-// ฟังก์ชันดึงข้อมูลสถิติการคลิกเชิงลึกจากตาราง click_logs
 const openClickLogs = async (item: ShortUrlItem) => {
   selectedLogUrlItem.value = item
   clickLogs.value = []
@@ -45,16 +42,15 @@ const openClickLogs = async (item: ShortUrlItem) => {
       clickLogs.value = res.data
     }
   } catch (err) {
-    console.error('Fetch click logs error:', err)
+    console.error(err)
   } finally {
     isFetchingLogs.value = false
   }
 }
 
-// ฟังก์ชันส่งข้อมูลไปสร้าง Short URL ที่ API
 const handleShorten = async () => {
   if (!originalUrl.value.trim()) {
-    errorMessage.value = 'กรุณากรอก Full URL ที่ต้องการย่อ'
+    errorMessage.value = 'กรุณากรอก URL ที่ต้องการย่อ'
     return
   }
 
@@ -80,13 +76,12 @@ const handleShorten = async () => {
       await fetchHistory()
     }
   } catch (err: any) {
-    errorMessage.value = err.data?.statusMessage || err.message || 'เกิดข้อผิดพลาดในการสร้าง Short URL'
+    errorMessage.value = err.data?.statusMessage || err.message || 'ไม่สามารถสร้าง Short URL ได้'
   } finally {
     isLoading.value = false
   }
 }
 
-// คัดลอกลิงก์
 const copyToClipboard = async (text: string, id: number) => {
   try {
     await navigator.clipboard.writeText(text)
@@ -95,13 +90,12 @@ const copyToClipboard = async (text: string, id: number) => {
       copiedId.value = null
     }, 2000)
   } catch (err) {
-    console.error('Copy failed:', err)
+    console.error(err)
   }
 }
 
-// ลบลิงก์
 const deleteUrl = async (id: number) => {
-  if (!confirm('ยืนยันที่จะลบ Short URL นี้?')) return
+  if (!confirm('ต้องการลบรายการนี้ใช่หรือไม่?')) return
   try {
     await $fetch(`/api/urls/${id}`, { method: 'DELETE' })
     if (successResult.value?.id === id) {
@@ -113,15 +107,13 @@ const deleteUrl = async (id: number) => {
   }
 }
 
-// ดาวน์โหลด QR Code
 const downloadQr = (dataUrl: string, code: string) => {
   const link = document.createElement('a')
   link.href = dataUrl
-  link.download = `qrcode-${code}.png`
+  link.download = `qr-${code}.png`
   link.click()
 }
 
-// จัด Format วันที่
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '-'
   const d = new Date(dateStr)
@@ -140,302 +132,298 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="max-w-6xl mx-auto px-4 py-8 sm:py-12 space-y-12">
-    <!-- Hero / Input Section -->
-    <section class="text-center max-w-3xl mx-auto space-y-4">
-      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-sky-300 to-rose-400 bg-clip-text text-transparent">
-        สร้าง Short URL & QR Code ในไม่กี่วินาที
-      </h1>
-      <p class="text-slate-400 text-sm sm:text-base">
-        ระบบแปลง URL ขนาดยาวให้สั้นกระชับ สแกนผ่าน QR Code ได้ทันที พร้อมระบบเก็บประวัติและติดตามสถิติการคลิก
-      </p>
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+    <!-- Top Section: Form -->
+    <section class="bg-white border border-zinc-200 p-6 sm:p-8 shadow-2xs">
+      <div class="mb-6 border-b border-zinc-100 pb-4">
+        <h1 class="text-xl font-semibold text-zinc-900 tracking-tight">
+          สร้างลิงก์สั้น (Short URL)
+        </h1>
+        <p class="text-xs text-zinc-500 mt-1">
+          วางลิงก์ต้นฉบับเพื่อสร้าง URL ขนาดสั้นและ QR Code สำหรับนำไปใช้งาน
+        </p>
+      </div>
 
-      <!-- Form Card -->
-      <div class="mt-8 bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 sm:p-6 shadow-2xl backdrop-blur-xl text-left">
-        <form @submit.prevent="handleShorten" class="space-y-4">
+      <form @submit.prevent="handleShorten" class="space-y-5">
+        <div>
+          <label class="block text-xs font-medium text-zinc-700 mb-1.5">
+            Destination URL <span class="text-red-600">*</span>
+          </label>
+          <input
+            v-model="originalUrl"
+            type="text"
+            placeholder="https://www.synerry.com"
+            class="w-full px-3.5 py-2.5 bg-white border border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 text-sm transition"
+            :disabled="isLoading"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-              Full URL ต้นฉบับ <span class="text-rose-400">*</span>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">
+              Custom Alias (ไม่บังคับ)
             </label>
-            <div class="relative">
+            <div class="flex items-center border border-zinc-300 bg-white focus-within:border-zinc-900 transition">
+              <span class="px-3 py-2.5 bg-zinc-50 border-r border-zinc-200 text-zinc-400 text-xs font-mono select-none">
+                /
+              </span>
               <input
-                v-model="originalUrl"
+                v-model="customAlias"
                 type="text"
-                placeholder="https://www.synerry.com หรือแปะลิงก์ยาวๆ ที่นี่..."
-                class="w-full px-4 py-3.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm sm:text-base transition"
+                placeholder="custom-slug"
+                class="w-full bg-transparent px-3 py-2.5 text-zinc-900 placeholder-zinc-400 focus:outline-none text-sm"
                 :disabled="isLoading"
               />
             </div>
           </div>
 
-          <!-- Optional Features (Custom Alias & Expiry) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div>
-              <label class="block text-xs font-medium text-slate-400 mb-1">
-                Custom Alias (ระบุชื่อเอง - ไม่บังคับ)
-              </label>
-              <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-indigo-500">
-                <span class="text-slate-500 select-none text-xs">/</span>
-                <input
-                  v-model="customAlias"
-                  type="text"
-                  placeholder="my-custom-link"
-                  class="w-full bg-transparent border-0 text-white placeholder-slate-500 focus:outline-none px-1 text-sm"
-                  :disabled="isLoading"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-medium text-slate-400 mb-1">
-                วันหมดอายุ (Expiry Days - ไม่บังคับ)
-              </label>
-              <select
-                v-model="expiresInDays"
-                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                :disabled="isLoading"
-              >
-                <option value="">ไม่มีวันหมดอายุ (Never)</option>
-                <option :value="1">1 วัน</option>
-                <option :value="7">7 วัน</option>
-                <option :value="30">30 วัน</option>
-              </select>
-            </div>
+          <div>
+            <label class="block text-xs font-medium text-zinc-700 mb-1.5">
+              วันหมดอายุ (ไม่บังคับ)
+            </label>
+            <select
+              v-model="expiresInDays"
+              class="w-full bg-white border border-zinc-300 px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-900 transition"
+              :disabled="isLoading"
+            >
+              <option value="">ไม่มีวันหมดอายุ</option>
+              <option :value="1">1 วัน</option>
+              <option :value="7">7 วัน</option>
+              <option :value="30">30 วัน</option>
+            </select>
           </div>
+        </div>
 
-          <!-- Error Notification -->
-          <div v-if="errorMessage" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm">
-            {{ errorMessage }}
-          </div>
+        <div v-if="errorMessage" class="p-3 bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+          {{ errorMessage }}
+        </div>
 
-          <!-- Submit Button -->
+        <div class="pt-1 flex justify-end">
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold shadow-lg shadow-indigo-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full sm:w-auto px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition disabled:opacity-50 cursor-pointer"
           >
-            <span v-if="isLoading">กำลังสร้าง...</span>
-            <span v-else>ย่อลิงก์ (Shorten URL)</span>
+            {{ isLoading ? 'กำลังประมวลผล...' : 'สร้าง Short URL' }}
           </button>
-        </form>
+        </div>
+      </form>
+    </section>
+
+    <!-- Result Box -->
+    <section v-if="successResult" class="bg-white border-2 border-zinc-900 p-6">
+      <div class="flex items-center justify-between border-b border-zinc-200 pb-3 mb-5">
+        <span class="text-xs font-bold uppercase tracking-wider text-zinc-900">
+          ผลลัพธ์การสร้าง Short URL
+        </span>
+        <button
+          @click="successResult = null"
+          class="text-xs text-zinc-400 hover:text-zinc-900"
+        >
+          ปิด [X]
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+        <div class="flex flex-col items-center border border-zinc-200 p-3 bg-zinc-50">
+          <img :src="successResult.qr_code" alt="QR Code" class="w-36 h-36 object-contain bg-white border border-zinc-200 p-1" />
+          <button
+            @click="downloadQr(successResult.qr_code, successResult.short_code)"
+            class="mt-2.5 w-full py-1.5 bg-white border border-zinc-300 hover:border-zinc-900 text-zinc-900 text-xs font-medium transition cursor-pointer"
+          >
+            ดาวน์โหลด PNG
+          </button>
+        </div>
+
+        <div class="md:col-span-3 space-y-4">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+              Short URL
+            </label>
+            <div class="flex items-center border border-zinc-300 bg-zinc-50">
+              <a
+                :href="successResult.short_url"
+                target="_blank"
+                class="px-3.5 py-2.5 text-sm font-mono font-semibold text-zinc-900 hover:underline break-all flex-1"
+              >
+                {{ successResult.short_url }}
+              </a>
+              <button
+                @click="copyToClipboard(successResult.short_url, successResult.id)"
+                class="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium transition shrink-0 cursor-pointer"
+              >
+                {{ copiedId === successResult.id ? 'คัดลอกแล้ว' : 'คัดลอกลิงก์' }}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-1">
+              Original URL
+            </label>
+            <p class="text-xs text-zinc-600 break-all font-mono">
+              {{ successResult.original_url }}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-6 pt-2 border-t border-zinc-100 text-xs text-zinc-500">
+            <span>Code: <strong class="font-mono text-zinc-900">{{ successResult.short_code }}</strong></span>
+            <span>หมดอายุ: <strong class="text-zinc-900">{{ formatDate(successResult.expires_at || '') }}</strong></span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Success Result Box (เมื่อสร้างสำเร็จ) -->
-    <section v-if="successResult" class="max-w-3xl mx-auto">
-      <div class="bg-gradient-to-b from-indigo-950/40 to-slate-800/80 border border-indigo-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
-        <div class="flex items-center gap-2 text-indigo-400 text-sm font-semibold mb-4">
-          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-          สร้าง Short URL เรียบร้อยแล้ว!
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          <!-- QR Code Preview -->
-          <div class="flex flex-col items-center justify-center p-4 bg-white rounded-xl shadow-inner text-slate-900">
-            <img :src="successResult.qr_code" alt="QR Code" class="w-44 h-44 object-contain" />
-            <button
-              @click="downloadQr(successResult.qr_code, successResult.short_code)"
-              class="mt-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition"
-            >
-              ดาวน์โหลด QR Code
-            </button>
-          </div>
-
-          <!-- URL Details & Actions -->
-          <div class="md:col-span-2 space-y-4">
-            <div>
-              <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">Short URL ของคุณ</span>
-              <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700 p-2.5 rounded-xl">
-                <a
-                  :href="successResult.short_url"
-                  target="_blank"
-                  class="text-indigo-400 hover:text-indigo-300 font-medium text-sm sm:text-base break-all flex-1 underline underline-offset-4"
-                >
-                  {{ successResult.short_url }}
-                </a>
-                <button
-                  @click="copyToClipboard(successResult.short_url, successResult.id)"
-                  class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition shrink-0"
-                >
-                  {{ copiedId === successResult.id ? 'คัดลอกแล้ว!' : 'Copy' }}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <span class="text-xs text-slate-400 uppercase tracking-wider block mb-1">URL ปลายทาง (Original URL)</span>
-              <p class="text-slate-300 text-xs sm:text-sm break-all line-clamp-2">
-                {{ successResult.original_url }}
-              </p>
-            </div>
-
-            <div class="flex flex-wrap gap-4 pt-2 text-xs text-slate-400 border-t border-slate-700/60">
-              <span>รหัสสั้น: <strong class="text-slate-200">{{ successResult.short_code }}</strong></span>
-              <span>หมดอายุ: <strong class="text-slate-200">{{ formatDate(successResult.expires_at || '') }}</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- History & Analytics Table Section -->
-    <section class="space-y-4">
-      <div class="flex items-center justify-between">
+    <!-- History & Analytics Section -->
+    <section class="bg-white border border-zinc-200">
+      <div class="p-5 border-b border-zinc-200 flex items-center justify-between">
         <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-            ประวัติ & สถิติการใช้งาน
-            <span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
-              {{ historyList.length }} ลิงก์
-            </span>
+          <h2 class="text-base font-semibold text-zinc-900">
+            ประวัติการสร้างและสถิติการคลิก ({{ historyList.length }})
           </h2>
-          <p class="text-xs sm:text-sm text-slate-400">รายการ URL ที่สร้างทั้งหมด (คลิกที่จำนวนครั้งเพื่อดูประวัติ IP & อุปกรณ์จากตาราง click_logs)</p>
+          <p class="text-xs text-zinc-500 mt-0.5">
+            สามารถคลิกที่ตัวเลขจำนวนคลิกเพื่อตรวจสอบข้อมูล IP และ Browser จากตาราง click_logs
+          </p>
         </div>
 
         <button
           @click="fetchHistory"
           :disabled="isFetchingHistory"
-          class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
+          class="px-3.5 py-1.5 border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-800 text-xs font-medium transition cursor-pointer"
         >
           {{ isFetchingHistory ? 'กำลังโหลด...' : 'รีเฟรชข้อมูล' }}
         </button>
       </div>
 
-      <!-- Table Container -->
-      <div class="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs sm:text-sm">
-            <thead class="bg-slate-900/80 text-slate-400 uppercase text-[11px] tracking-wider border-b border-slate-700">
-              <tr>
-                <th class="py-3.5 px-4">Short URL</th>
-                <th class="py-3.5 px-4">Full URL ปลายทาง</th>
-                <th class="py-3.5 px-4 text-center">สถิติคลิก (ดู Log)</th>
-                <th class="py-3.5 px-4 text-center">QR Code</th>
-                <th class="py-3.5 px-4">วันที่สร้าง</th>
-                <th class="py-3.5 px-4 text-center">สถานะ</th>
-                <th class="py-3.5 px-4 text-center">จัดการ</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-700/60 text-slate-300">
-              <tr v-if="historyList.length === 0">
-                <td colspan="7" class="py-8 text-center text-slate-500">
-                  ยังไม่มีข้อมูลประวัติ Short URL ในระบบ เริ่มสร้างได้ที่กล่องด้านบนเลย!
-                </td>
-              </tr>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase tracking-wider text-[11px]">
+              <th class="py-3 px-4 font-semibold">Short URL</th>
+              <th class="py-3 px-4 font-semibold">Original URL</th>
+              <th class="py-3 px-4 font-semibold text-center">Clicks</th>
+              <th class="py-3 px-4 font-semibold text-center">QR Code</th>
+              <th class="py-3 px-4 font-semibold">Created</th>
+              <th class="py-3 px-4 font-semibold text-center">Status</th>
+              <th class="py-3 px-4 font-semibold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-200 text-zinc-700">
+            <tr v-if="historyList.length === 0">
+              <td colspan="7" class="py-10 text-center text-zinc-400">
+                ยังไม่มีข้อมูลประวัติการสร้าง Short URL
+              </td>
+            </tr>
 
-              <tr
-                v-for="item in historyList"
-                :key="item.id"
-                class="hover:bg-slate-700/30 transition"
-              >
-                <!-- Short URL -->
-                <td class="py-3.5 px-4 font-mono font-medium text-indigo-400">
-                  <div class="flex items-center gap-1.5">
-                    <a :href="item.short_url" target="_blank" class="hover:underline">
-                      /{{ item.short_code }}
-                    </a>
-                    <button
-                      @click="copyToClipboard(item.short_url, item.id)"
-                      class="p-1 hover:text-white transition text-slate-500"
-                      title="Copy link"
-                    >
-                      {{ copiedId === item.id ? '✓' : '📋' }}
-                    </button>
-                  </div>
-                </td>
-
-                <!-- Original URL -->
-                <td class="py-3.5 px-4 max-w-xs truncate" :title="item.original_url">
-                  <a :href="item.original_url" target="_blank" class="hover:text-white hover:underline text-slate-400">
-                    {{ item.original_url }}
+            <tr
+              v-for="item in historyList"
+              :key="item.id"
+              class="hover:bg-zinc-50/80 transition"
+            >
+              <td class="py-3.5 px-4 font-mono font-semibold text-zinc-900 whitespace-nowrap">
+                <div class="flex items-center gap-2">
+                  <a :href="item.short_url" target="_blank" class="hover:underline">
+                    /{{ item.short_code }}
                   </a>
-                </td>
-
-                <!-- Clicks Count (Clickable to view click_logs) -->
-                <td class="py-3.5 px-4 text-center">
                   <button
-                    @click="openClickLogs(item)"
-                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 transition cursor-pointer"
-                    title="คลิกเพื่อดูประวัติการคลิกเชิงลึก (IP / อุปกรณ์)"
+                    @click="copyToClipboard(item.short_url, item.id)"
+                    class="px-1.5 py-0.5 border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-[10px] font-sans font-normal text-zinc-600 transition cursor-pointer"
                   >
-                    <span>{{ item.click_count }} ครั้ง</span>
-                    <span class="text-[10px] opacity-75">🔍</span>
+                    {{ copiedId === item.id ? 'Copied' : 'Copy' }}
                   </button>
-                </td>
+                </div>
+              </td>
 
-                <!-- QR Code Preview Button -->
-                <td class="py-3.5 px-4 text-center">
-                  <button
-                    @click="selectedQrItem = item"
-                    class="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs text-slate-200 transition"
-                  >
-                    ดู QR
-                  </button>
-                </td>
+              <td class="py-3.5 px-4 max-w-xs truncate font-mono text-zinc-500" :title="item.original_url">
+                <a :href="item.original_url" target="_blank" class="hover:text-zinc-900 hover:underline">
+                  {{ item.original_url }}
+                </a>
+              </td>
 
-                <!-- Created At -->
-                <td class="py-3.5 px-4 text-slate-400 text-xs">
-                  {{ formatDate(item.created_at) }}
-                </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <button
+                  @click="openClickLogs(item)"
+                  class="px-2.5 py-1 border border-zinc-300 bg-zinc-50 hover:border-zinc-900 hover:bg-white text-zinc-900 font-mono font-semibold text-xs transition cursor-pointer"
+                  title="ดูรายละเอียดการคลิก"
+                >
+                  {{ item.click_count }} คลิก
+                </button>
+              </td>
 
-                <!-- Status -->
-                <td class="py-3.5 px-4 text-center">
-                  <span
-                    v-if="item.is_expired"
-                    class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                  >
-                    หมดอายุ
-                  </span>
-                  <span
-                    v-else
-                    class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                  >
-                    ปกติ
-                  </span>
-                </td>
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <button
+                  @click="selectedQrItem = item"
+                  class="px-2.5 py-1 border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium transition cursor-pointer"
+                >
+                  QR Code
+                </button>
+              </td>
 
-                <!-- Delete Button -->
-                <td class="py-3.5 px-4 text-center">
-                  <button
-                    @click="deleteUrl(item.id)"
-                    class="text-slate-500 hover:text-rose-400 transition text-xs p-1"
-                    title="ลบ"
-                  >
-                    ลบ
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              <td class="py-3.5 px-4 text-zinc-500 whitespace-nowrap">
+                {{ formatDate(item.created_at) }}
+              </td>
+
+              <td class="py-3.5 px-4 text-center whitespace-nowrap">
+                <span
+                  v-if="item.is_expired"
+                  class="px-2 py-0.5 bg-red-50 text-red-700 border border-red-200 text-[10px] font-semibold uppercase"
+                >
+                  Expired
+                </span>
+                <span
+                  v-else
+                  class="px-2 py-0.5 bg-zinc-100 text-zinc-800 border border-zinc-300 text-[10px] font-semibold uppercase"
+                >
+                  Active
+                </span>
+              </td>
+
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <button
+                  @click="deleteUrl(item.id)"
+                  class="text-zinc-400 hover:text-red-600 font-medium transition cursor-pointer"
+                >
+                  ลบ
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <!-- Modal ดู QR Code ขนาดใหญ่ -->
+    <!-- QR Code Modal -->
     <div
       v-if="selectedQrItem"
-      class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
       @click.self="selectedQrItem = null"
     >
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center">
-        <h3 class="font-bold text-lg text-white">QR Code</h3>
-        <p class="text-xs text-slate-400 break-all font-mono">
+      <div class="bg-white border border-zinc-300 p-6 max-w-sm w-full space-y-4 shadow-lg text-center">
+        <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
+          <h3 class="font-semibold text-sm text-zinc-900 uppercase tracking-wider">QR Code</h3>
+          <button @click="selectedQrItem = null" class="text-xs text-zinc-400 hover:text-zinc-900 cursor-pointer">
+            [X]
+          </button>
+        </div>
+
+        <p class="text-xs text-zinc-600 break-all font-mono bg-zinc-50 p-2 border border-zinc-200">
           {{ selectedQrItem.short_url }}
         </p>
 
-        <div class="p-4 bg-white rounded-xl inline-block shadow-inner mx-auto">
-          <img :src="selectedQrItem.qr_code" alt="QR Code" class="w-52 h-52 object-contain" />
+        <div class="p-3 bg-white border border-zinc-200 inline-block mx-auto">
+          <img :src="selectedQrItem.qr_code" alt="QR Code" class="w-48 h-48 object-contain" />
         </div>
 
-        <div class="flex gap-2 justify-center pt-2">
+        <div class="flex gap-2 pt-2">
           <button
             @click="downloadQr(selectedQrItem.qr_code, selectedQrItem.short_code)"
-            class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition"
+            class="flex-1 py-2 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition cursor-pointer"
           >
-            ดาวน์โหลดภาพ
+            ดาวน์โหลด PNG
           </button>
           <button
             @click="selectedQrItem = null"
-            class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs font-medium transition"
+            class="px-4 py-2 border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium transition cursor-pointer"
           >
             ปิด
           </button>
@@ -443,55 +431,57 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Modal ดูประวัติการคลิกเชิงลึก (Click Logs Modal) -->
+    <!-- Click Logs Modal -->
     <div
       v-if="selectedLogUrlItem"
-      class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
       @click.self="selectedLogUrlItem = null"
     >
-      <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full space-y-4 shadow-2xl">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div class="bg-white border border-zinc-300 p-6 max-w-2xl w-full space-y-4 shadow-lg">
+        <div class="flex items-center justify-between border-b border-zinc-200 pb-3">
           <div>
-            <h3 class="font-bold text-lg text-white">
-              ประวัติการคลิกเชิงลึก (ตาราง click_logs)
+            <h3 class="font-semibold text-sm text-zinc-900">
+              ประวัติการคลิก (Click Logs)
             </h3>
-            <p class="text-xs text-indigo-400 font-mono">
-              /{{ selectedLogUrlItem.short_code }} ({{ selectedLogUrlItem.click_count }} คลิก)
+            <p class="text-xs text-zinc-500 font-mono mt-0.5">
+              /{{ selectedLogUrlItem.short_code }} — รวม {{ selectedLogUrlItem.click_count }} คลิก
             </p>
           </div>
           <button
             @click="selectedLogUrlItem = null"
-            class="px-3 py-1 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 text-xs"
+            class="px-3 py-1 border border-zinc-300 hover:border-zinc-900 text-zinc-700 text-xs cursor-pointer"
           >
             ปิด
           </button>
         </div>
 
-        <div v-if="isFetchingLogs" class="py-8 text-center text-slate-400 text-sm">
-          กำลังดึงข้อมูลจากตาราง click_logs...
+        <div v-if="isFetchingLogs" class="py-10 text-center text-zinc-400 text-xs">
+          กำลังโหลดข้อมูล...
         </div>
 
-        <div v-else-if="clickLogs.length === 0" class="py-8 text-center text-slate-500 text-sm">
-          ยังไม่มีประวัติการคลิกสำหรับลิงก์นี้
+        <div v-else-if="clickLogs.length === 0" class="py-10 text-center text-zinc-400 text-xs">
+          ยังไม่มีข้อมูลการคลิกสำหรับรายการนี้
         </div>
 
-        <div v-else class="max-h-80 overflow-y-auto divide-y divide-slate-700/60">
-          <div
-            v-for="log in clickLogs"
-            :key="log.id"
-            class="py-3 px-2 text-xs space-y-1 hover:bg-slate-700/20 rounded"
-          >
-            <div class="flex items-center justify-between text-slate-300 font-medium">
-              <span>🌐 IP: <span class="font-mono text-emerald-400">{{ log.ip_address }}</span></span>
-              <span class="text-slate-400">{{ formatDate(log.clicked_at) }}</span>
-            </div>
-            <div class="text-slate-400 truncate" :title="log.user_agent">
-              💻 อุปกรณ์/Browser: {{ log.user_agent }}
-            </div>
-            <div class="text-slate-500">
-              🔗 แหล่งที่มา (Referer): {{ log.referer }}
-            </div>
-          </div>
+        <div v-else class="max-h-80 overflow-y-auto border border-zinc-200">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase text-[10px]">
+              <tr>
+                <th class="py-2 px-3">เวลาที่คลิก</th>
+                <th class="py-2 px-3">IP Address</th>
+                <th class="py-2 px-3">Referer</th>
+                <th class="py-2 px-3">User Agent</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200 text-zinc-700">
+              <tr v-for="log in clickLogs" :key="log.id" class="hover:bg-zinc-50">
+                <td class="py-2.5 px-3 whitespace-nowrap text-zinc-500">{{ formatDate(log.clicked_at) }}</td>
+                <td class="py-2.5 px-3 font-mono text-zinc-900 whitespace-nowrap">{{ log.ip_address }}</td>
+                <td class="py-2.5 px-3 text-zinc-500 whitespace-nowrap">{{ log.referer }}</td>
+                <td class="py-2.5 px-3 text-zinc-500 max-w-xs truncate" :title="log.user_agent">{{ log.user_agent }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

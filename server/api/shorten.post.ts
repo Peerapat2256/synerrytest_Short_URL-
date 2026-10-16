@@ -1,7 +1,6 @@
 import { useUrlService } from '../utils/container'
 import type { CreateShortUrlRequestDto } from '../controller/dto/url.dto'
 
-// Presentation Layer (Controller): รับ HTTP Request -> ส่ง DTO ให้ Service -> คืนค่า JSON
 export default defineEventHandler(async (event) => {
   const body = await readBody<CreateShortUrlRequestDto>(event)
 

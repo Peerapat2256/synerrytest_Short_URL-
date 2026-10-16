@@ -5,7 +5,6 @@ import type { ClickLogModel } from '../model/clickLog.model'
 import type { UrlModel } from '../model/url.model'
 import { generateShortCode, isValidUrl } from '../utils/urlHelper'
 
-// กำหนด Interface สำหรับ UrlService (Business Logic Layer)
 export interface UrlService {
   createShortUrl(dto: CreateShortUrlRequestDto, baseUrl: string): Promise<ShortUrlResponseDto>
   getAllUrls(baseUrl: string): Promise<ShortUrlResponseDto[]>
@@ -42,13 +41,13 @@ class UrlServiceImpl implements UrlService {
       if (!/^[a-zA-Z0-9_-]{3,20}$/.test(cleanAlias)) {
         throw createError({
           statusCode: 400,
-          statusMessage: 'Custom Alias ต้องมีความยาว 3-20 ตัวอักษร และประกอบด้วยตัวอักษร, ตัวเลข, - หรือ _ เท่านั้น'
+          statusMessage: 'Custom Alias ต้องมีความยาว 3-20 ตัวอักษร (a-z, 0-9, -, _)'
         })
       }
 
       const existing = await this.urlRepository.getUrlByShortCode(cleanAlias)
       if (existing) {
-        throw createError({ statusCode: 409, statusMessage: 'ชื่อกำหนดเอง (Custom Alias) นี้มีผู้ใช้งานแล้ว' })
+        throw createError({ statusCode: 409, statusMessage: 'ชื่อ Custom Alias นี้ถูกใช้งานแล้ว' })
       }
       shortCode = cleanAlias
     } else {
@@ -63,7 +62,7 @@ class UrlServiceImpl implements UrlService {
         attempts++
       }
       if (!shortCode) {
-        throw createError({ statusCode: 500, statusMessage: 'ไม่สามารถสร้าง Short Code ได้ กรุณาลองใหม่อีกครั้ง' })
+        throw createError({ statusCode: 500, statusMessage: 'ไม่สามารถสร้างรหัสย่อได้ กรุณาลองใหม่' })
       }
     }
 
@@ -78,10 +77,10 @@ class UrlServiceImpl implements UrlService {
     const fullShortUrl = `${baseUrl}/${shortCode}`
 
     const qrCodeDataUrl = await QRCode.toDataURL(fullShortUrl, {
-      width: 320,
+      width: 300,
       margin: 2,
       color: {
-        dark: '#0f172a',
+        dark: '#09090b',
         light: '#ffffff'
       }
     })
@@ -137,14 +136,12 @@ class UrlServiceImpl implements UrlService {
     if (urlRecord.expires_at && new Date(urlRecord.expires_at) < new Date()) {
       throw createError({
         statusCode: 410,
-        statusMessage: 'ลิงก์สั้นนี้หมดอายุการใช้งานแล้ว (Link Expired)'
+        statusMessage: 'Link Expired'
       })
     }
 
-    // อัปเดตยอดคลิก +1
     await this.urlRepository.incrementClickCount(urlRecord.id)
 
-    // บันทึกประวัติการคลิกแบบ Non-blocking
     this.urlRepository
       .createClickLog(urlRecord.id, ip, userAgent, referer)
       .catch((err) => console.error('Click log error:', err))
@@ -155,7 +152,7 @@ class UrlServiceImpl implements UrlService {
   async deleteUrl(id: number): Promise<void> {
     const deleted = await this.urlRepository.deleteUrlById(id)
     if (!deleted) {
-      throw createError({ statusCode: 404, statusMessage: 'ไม่พบข้อมูล URL ที่ต้องการลบ' })
+      throw createError({ statusCode: 404, statusMessage: 'URL not found' })
     }
   }
 
@@ -164,7 +161,6 @@ class UrlServiceImpl implements UrlService {
   }
 }
 
-// ฟังก์ชันสำหรับสร้าง Instance ของ UrlService โดยรับ UrlRepository เข้ามา (Dependency Injection)
 export function NewUrlService(urlRepository: UrlRepository): UrlService {
   return new UrlServiceImpl(urlRepository)
 }

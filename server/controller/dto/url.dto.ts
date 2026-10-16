@@ -1,5 +1,3 @@
-// Data Transfer Objects (DTO) สำหรับรับ-ส่งข้อมูลระหว่าง Controller (API) กับ Frontend
-
 export interface CreateShortUrlRequestDto {
   original_url: string
   custom_alias?: string

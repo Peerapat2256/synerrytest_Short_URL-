@@ -1,4 +1,3 @@
-// โครงสร้างข้อมูลตาราง click_logs ในฐานข้อมูล (Database Entity Model)
 export interface ClickLogModel {
   id: number
   url_id: number

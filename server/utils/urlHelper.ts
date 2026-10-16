@@ -1,6 +1,5 @@
 import { customAlphabet } from 'nanoid'
 
-// สุ่มเฉพาะตัวอักษรและตัวเลขที่อ่านง่าย ไม่สับสน (Base62)
 const alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const nanoid = customAlphabet(alphabet, 6)
 

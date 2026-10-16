@@ -1,6 +1,5 @@
 import { useUrlService } from '../utils/container'
 
-// Presentation Layer (Redirect Controller): ดักจับ Short Code -> เรียก UrlService -> HTTP 302 Redirect
 export default defineEventHandler(async (event) => {
   const reqPath = event.path || ''
 
@@ -34,6 +33,6 @@ export default defineEventHandler(async (event) => {
     return sendRedirect(event, urlRecord.original_url, 302)
   } catch (err: any) {
     if (err.statusCode) throw err
-    console.error('Redirect handler error:', err)
+    console.error('Redirect error:', err)
   }
 })

@@ -2,7 +2,6 @@ import type { Pool, RowDataPacket, ResultSetHeader } from 'mysql2/promise'
 import type { UrlModel } from '../model/url.model'
 import type { ClickLogModel } from '../model/clickLog.model'
 
-// กำหนด Interface สำหรับ UrlRepository เพื่อควบคุมฟังก์ชันการเข้าถึงฐานข้อมูล
 export interface UrlRepository {
   getAllUrls(): Promise<UrlModel[]>
   getUrlByShortCode(shortCode: string): Promise<UrlModel | null>
@@ -75,7 +74,6 @@ class UrlRepositoryImpl implements UrlRepository {
   }
 }
 
-// ฟังก์ชันสำหรับสร้าง Instance ของ UrlRepository (Dependency Injection)
 export function NewUrlRepository(db: Pool): UrlRepository {
   return new UrlRepositoryImpl(db)
 }

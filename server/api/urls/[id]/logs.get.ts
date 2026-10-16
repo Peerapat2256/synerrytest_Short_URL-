@@ -1,10 +1,9 @@
 import { useUrlService } from '../../../utils/container'
 
-// Presentation Layer (Controller): ดึงประวัติการคลิกจากตาราง click_logs ผ่าน UrlService
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing URL ID' })
+    throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
   }
 
   const urlService = await useUrlService()

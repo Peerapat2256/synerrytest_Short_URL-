@@ -17,7 +17,6 @@ const pool = mysql.createPool({
 
 let initialized = false
 
-// ฟังก์ชันสร้างและตรวจสอบการเชื่อมต่อฐานข้อมูลกลาง (ตามแนวทาง repository/dbconnect)
 export async function NewDbConnection(): Promise<mysql.Pool> {
   if (!initialized) {
     try {
@@ -48,9 +47,8 @@ export async function NewDbConnection(): Promise<mysql.Pool> {
       `)
 
       initialized = true
-      console.log('Database connected & tables initialized successfully')
     } catch (err) {
-      console.error('Error connecting to database:', err)
+      console.error('Database initialization error:', err)
     }
   }
   return pool

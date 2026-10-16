@@ -1,4 +1,3 @@
-// โครงสร้างข้อมูล Model ฝั่ง Frontend สำหรับแสดงผลบนหน้าจอ
 export interface ShortUrlItem {
   id: number
   original_url: string

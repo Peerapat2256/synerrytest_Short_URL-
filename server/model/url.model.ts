@@ -1,4 +1,3 @@
-// โครงสร้างข้อมูลตาราง urls ในฐานข้อมูล (Database Entity Model)
 export interface UrlModel {
   id: number
   original_url: string
