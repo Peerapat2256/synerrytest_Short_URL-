@@ -1,6 +1,7 @@
+import { defineEventHandler, getRequestIP, getRequestHeader, sendRedirect, type H3Event } from 'h3'
 import { useUrlService } from '../utils/container'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event: H3Event) => {
   const reqPath = event.path || ''
 
   if (
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const cleanPath = reqPath.split('?')[0].replace(/^\//, '')
+  const cleanPath = reqPath.split('?')[0]?.replace(/^\//, '') || ''
   if (!cleanPath || !/^[a-zA-Z0-9_-]{3,50}$/.test(cleanPath)) {
     return
   }

@@ -1,3 +1,4 @@
+import { createError } from 'h3'
 import QRCode from 'qrcode'
 import type { UrlRepository } from '../repository/url.repository'
 import type { CreateShortUrlRequestDto, ShortUrlResponseDto } from '../controller/dto/url.dto'
